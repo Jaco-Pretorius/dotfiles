@@ -34,8 +34,6 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'elzr/vim-json'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'tpope/vim-ragtag'
-Bundle 'tpope/vim-rails'
-Bundle 'tpope/vim-rake'
 Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'tpope/vim-markdown'
 Bundle 'mustache/vim-mustache-handlebars'
@@ -44,6 +42,7 @@ Bundle 'editorconfig/editorconfig-vim'
 " Colorschemes
 Bundle 'junegunn/seoul256.vim'
 Bundle 'tomasr/molokai'
+Bundle 'tpope/vim-vividchalk'
 
 call vundle#end()
 
@@ -57,7 +56,11 @@ endif
 set noshowmode
 set background=dark
 set guifont=Hack:h16
-colorscheme molokai
+"colorscheme molokai
+"colorscheme vividchalk
+"colorscheme vwilight
+let g:seoul256_background = 233
+colorscheme seoul256
 
 " General Config
 " --------------
@@ -185,7 +188,6 @@ set guicursor=a:blinkon0           " Turn off the blinking cursor
 " ---------------
 " copy the current path
 map <silent> <D-C> :let @* = expand("%:p")<CR>:echo "Copied: ".expand("%:p")<CR>
-" copy the current path with line number
 map <leader>C :let @* = expand("%:p").":".line(".")<CR>:echo "Copied: ".expand("%:p").":".line(".")<CR>
 
 " hit space to clear search
@@ -199,3 +201,123 @@ let leave_trailing_white_space = ['md', 'markdown']
 " save when switching buffers
 set autowriteall                   " Save when doing various buffer-switching things.
 autocmd BufLeave,FocusLost * silent! wall
+
+autocmd Filetype ruby setlocal nocursorline
+
+:silent command! -bang AV call OpenAssociatedFile("vsplit", <bang>0)
+:silent command! -bang AS call OpenAssociatedFile("split", <bang>0)
+function! OpenAssociatedFile(split_command, create_if_missing)
+  let current_file_path = expand("%:")
+
+  if current_file_path =~ "_spec\.rb$"
+    let l:associated_file_path = substitute(substitute(current_file_path, "_spec\.rb$", ".rb", "g"), "\/spec\/", "/app/", "g")
+  else
+    if current_file_path =~ "\/lib\/" || current_file_path =~ "^lib\/"
+      let l:associated_file_path = substitute(substitute(current_file_path, "lib\/", "spec/lib/", "g"), "\.rb$", "_spec.rb", "g")
+    else
+      let l:associated_file_path = substitute(substitute(current_file_path, "app\/", "spec/", "s"), "\.rb$", "_spec.rb", "g")
+    end
+  endif
+
+  if !filereadable(l:associated_file_path) && current_file_path =~ "controller"
+    let l:associated_file_path = substitute(substitute(substitute(substitute(current_file_path, "\/app\/", "/spec/", "s"), "\/controllers\/", "/requests/", "g"), "_controller", "", "g"), "\.rb$", "_spec.rb", "g")
+  end
+  if !filereadable(l:associated_file_path) && current_file_path =~ "\/spec\/requests\/"
+    let l:associated_file_path = substitute(substitute(current_file_path, "\/spec\/requests\/", "/app/controllers/", "g"), "_spec\.rb$", "_controller.rb", "g")
+  end
+
+  if filereadable(l:associated_file_path) || a:create_if_missing
+    execute a:split_command . " " . l:associated_file_path
+  else
+    echo "No file " . l:associated_file_path . " found"
+  endif
+endf
+
+noremap <silent> gv :call BettermentCFile("vsplit")<cr>
+noremap <silent> gs :call BettermentCFile("split")<cr>
+noremap <silent> ge :call BettermentCFile("edit")<cr>
+
+function! Snakecase(word)
+  let word = substitute(a:word,'::','/','g')
+  let word = substitute(word,'\(\u\+\)\(\u\l\)','\1_\2','g')
+  let word = substitute(word,'\(\l\|\d\)\(\u\)','\1_\2','g')
+  let word = substitute(word,'[.-]','_','g')
+  let word = tolower(word)
+  return word
+endf
+
+function! FindFile(split_command, text)
+  let ext = expand("%:e")
+  let expected_file_name = shellescape(Snakecase(a:text) . "." . ext)
+  let current_project = split(expand("%:"),"/")[0]
+
+  let out = system("rg -l --files --color=never -g " . expected_file_name . " " . current_project . "/ | head -n 1")
+  if len(out) == 0 && current_project == "retail" && ext == "rb"
+    let out = system("rg -l --files --color=never -g " . expected_file_name . " retail_core/ | head -n 1")
+  end
+  if len(out) == 0 && (current_project == "retail_core" || current_project == "retail") && ext == "rb"
+    let out = system("rg -l --files --color=never -g " . expected_file_name . " broker_dealer_core/ | head -n 1")
+  end
+  if len(out) == 0
+    let out = system("rg -l --files --color=never -g " . expected_file_name . " | head -n 1")
+  end
+
+  if len(out) > 0
+    execute a:split_command . " " . out
+  else
+    echo "Could not locate a file named " . expected_file_name
+  endif
+endf
+
+" shamelessly copied from:
+" https://github.com/tyru/open-browser.vim
+" Get the last selected text in visual mode.
+function! GetLastSelected()
+  let save = getreg('"', 1)
+  let save_type = getregtype('"')
+  let [begin, end] = [getpos("'<"), getpos("'>")]
+  try
+    if visualmode() ==# "\<C-v>"
+      let begincol = begin[2] + (begin[2] ># getline('.') ? begin[3] : 0)
+      let endcol   =   end[2] + (  end[2] ># getline('.') ?       end[3] : 0)
+      if begincol ># endcol
+        " end's col must be greater than begin.
+        let tmp = begin[2:3]
+        let begin[2:3] = end[2:3]
+        let end[2:3] = tmp
+      endif
+      let virtpadchar = ' '
+      let lines = map(getline(begin[1], end[1]), '
+                  \ (v:val[begincol-1 : endcol-1])
+                  \ . repeat(virtpadchar, endcol-len(v:val))
+                  \')
+    else
+      if begin[1] ==# end[1]
+        let lines = [getline(begin[1])[begin[2]-1 : end[2]-1]]
+      else
+        let lines = [getline(begin[1])[begin[2]-1 :]]
+                    \                   + (end[1] - begin[1] <# 2 ? [] : getline(begin[1]+1, end[1]-1))
+                    \                   + [getline(end[1])[: end[2]-1]]
+      endif
+    endif
+    return join(lines, "\n") . (visualmode() ==# "V" ? "\n" : "")
+  finally
+    call setreg('"', save, save_type)
+  endtry
+endf
+
+function! GetSelectedText()
+  let selected_text = GetLastSelected()
+  let text = substitute(selected_text, '[\n\r]\+', ' ', 'g')
+  return substitute(text, '^\s*\|\s*$', '', 'g')
+endf
+
+function! BettermentCFile(split_command)
+  let selected_text = GetSelectedText()
+  let visual_mode = mode() == "\<C-V>" || mode() == "v" || mode() == "V"
+  if visual_mode && len(selected_text) > 0
+    call FindFile(a:split_command, selected_text)
+  else
+    call FindFile(a:split_command, expand('<cword>'))
+  endif
+endf
