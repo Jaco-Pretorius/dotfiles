@@ -28,6 +28,7 @@ alias fspec="FEATURES=1 rspec"
 alias gst="git status"
 alias gbr="git branch"
 alias rebase="git fetch && git reset --hard origin/master"
+alias be="bundle exec"
 
 if [ -f ~/.profile ]; then
   . ~/.profile
