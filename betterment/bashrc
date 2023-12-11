@@ -1,0 +1,2 @@
+source "$HOME/.bootstrap/env.sh"
+export PATH=$PATH:~/.local/bin
