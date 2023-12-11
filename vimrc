@@ -1,50 +1,56 @@
 " use vim not vi
 set nocompatible
+filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-Bundle 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.vim'
 
 " git helpers, mostly useful for :GBlame
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 
 " shows git changes to the left of line numbers
-Bundle 'airblade/vim-gitgutter'
+" I stopped using this because it made tab switching slow - https://github.com/airblade/vim-gitgutter/issues/82
+" Plugin 'airblade/vim-gitgutter'
 
 " fuzzy search across all files in directory
-Bundle 'ctrlpvim/ctrlp.vim'
-Bundle 'JazzCore/ctrlp-cmatcher', { 'do': 'CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments ./install.sh' }
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'JazzCore/ctrlp-cmatcher', { 'do': 'CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments ./install.sh' }
 
 " smart search within all files
-Bundle 'mileszs/ack.vim'
+Plugin 'mileszs/ack.vim'
 
 " typing autocomplete using lua
-Bundle 'Shougo/neocomplete.vim'
+Plugin 'Shougo/neocomplete.vim'
 
 " tree-explorer view on demand
-Bundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 
 " powerful commenting
-Bundle 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdcommenter'
 
 " Syntax
-Bundle 'tpope/vim-endwise'
-Bundle 'pangloss/vim-javascript'
-Bundle 'elzr/vim-json'
-Bundle 'vim-ruby/vim-ruby'
-Bundle 'tpope/vim-ragtag'
-Bundle 'cakebaker/scss-syntax.vim'
-Bundle 'tpope/vim-markdown'
-Bundle 'mustache/vim-mustache-handlebars'
-Bundle 'editorconfig/editorconfig-vim'
+Plugin 'tpope/vim-endwise'
+Plugin 'pangloss/vim-javascript'
+Plugin 'elzr/vim-json'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'tpope/vim-ragtag'
+Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'tpope/vim-markdown'
+Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'leafgarland/typescript-vim'
 
 " Colorschemes
-Bundle 'junegunn/seoul256.vim'
-Bundle 'tomasr/molokai'
-Bundle 'tpope/vim-vividchalk'
+Plugin 'junegunn/seoul256.vim'
+Plugin 'tomasr/molokai'
+Plugin 'tpope/vim-vividchalk'
+Plugin 'obsidian2.vim'
 
 call vundle#end()
+
+filetype plugin indent on
 
 " Appearance
 " ----------
@@ -55,17 +61,24 @@ if !has('gui_running')
 endif
 set noshowmode
 set background=dark
-set guifont=Hack:h16
+set guifont=Hack:h20
+"set guifont=Victor\ Mono:h16
 "colorscheme molokai
 "colorscheme vividchalk
 "colorscheme vwilight
-let g:seoul256_background = 233
-colorscheme seoul256
+"colorscheme seoul256
+if has('gui_running')
+  colorscheme obsidian2
+else
+  let g:seoul256_background = 233
+  colorscheme seoul256
+endif
 
 " General Config
 " --------------
 let mapleader = ","
 set number                         " show line numbers
+set ruler                          " show column numbers
 set backspace=indent,eol,start     " let backspace work over anything
 set showcmd                        " show typed command prefixes while waiting for operator
 set autoread                       " no prompt for file changes outside vim
@@ -141,7 +154,7 @@ if executable('rg')
   let g:ackprg = 'rg --vimgrep --smart-case'
 endif
 " use ctrlp-matcher for better matches
-let g:ctrlp_match_func = { 'match' : 'matcher#cmatch' }
+" let g:ctrlp_match_func = { 'match' : 'matcher#cmatch' }
 let g:ctrlp_working_path_mode = 'rw'
 
 
@@ -194,13 +207,19 @@ map <leader>C :let @* = expand("%:p").":".line(".")<CR>:echo "Copied: ".expand("
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>""
 
 " automatically strip whitespace on save
-autocmd BufWritePre * if index(leave_trailing_white_space, &ft) < 0 | :%s/\s\+$//e
+" autocmd BufWritePre * if index(leave_trailing_white_space, &ft) < 0 | :%s/\s\+$//e
 " except in markdown
 let leave_trailing_white_space = ['md', 'markdown']
 
 " save when switching buffers
 set autowriteall                   " Save when doing various buffer-switching things.
 autocmd BufLeave,FocusLost * silent! wall
+
+" .axlsx files are ruby templates for excel
+autocmd BufNewFile,BufRead *.axlsx set syntax=ruby
+
+" .inky-erb files are inky templates that use erb
+autocmd BufNewFile,BufRead *.inky-erb set syntax=eruby
 
 autocmd Filetype ruby setlocal nocursorline
 
@@ -253,9 +272,9 @@ function! FindFile(split_command, text)
 
   let out = system("rg -l --files --color=never -g " . expected_file_name . " " . current_project . "/ | head -n 1")
   if len(out) == 0 && current_project == "retail" && ext == "rb"
-    let out = system("rg -l --files --color=never -g " . expected_file_name . " retail_core/ | head -n 1")
+    let out = system("rg -l --files --color=never -g " . expected_file_name . " investing/ | head -n 1")
   end
-  if len(out) == 0 && (current_project == "retail_core" || current_project == "retail") && ext == "rb"
+  if len(out) == 0 && (current_project == "investing" || current_project == "retail") && ext == "rb"
     let out = system("rg -l --files --color=never -g " . expected_file_name . " broker_dealer_core/ | head -n 1")
   end
   if len(out) == 0
