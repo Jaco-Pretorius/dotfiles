@@ -1,0 +1,18 @@
+[init]
+  templatedir = /Users/jacopretorius/.git-templates
+  defaultBranch = main
+[alias]
+  co = checkout
+  br = branch
+  st = status
+[user]
+  name = Jaco Pretorius
+  email = me@jacopretorius.net
+[format]
+  pretty = format:%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s
+[log]
+  date = short
+[core]
+  pager = cat
+[credential]
+  helper = osxkeychain
