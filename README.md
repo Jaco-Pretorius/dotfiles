@@ -1,15 +1,23 @@
 # dotfiles
 
-# Install the Hack font
+# Install [HomeBrew](https://brew.sh/), then run the Brewfile
 ```
-brew tap homebrew/cask-fonts
-brew cask install font-hack
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew bundle install
 ```
 
+# Configure MacVim
 ```
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall
+cp vimrc ~/.vimrc
+mvim -v +PluginInstall +qall
 
 cd ~/.vim/bundle/ctrlp-cmatcher
 ./install.sh
+```
+
+# Install oh-my-zsh
+```
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+cp zshrc ~/.zshrc
 ```

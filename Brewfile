@@ -1,6 +1,6 @@
-brew 'macvim', args:['with-lua', 'with-override-system-vim']
+brew 'macvim'
 brew 'the_silver_searcher'
 brew 'ripgrep'
+brew 'rbenv'
 
-tap 'homebrew/cask-fonts'
 cask 'font-hack'
