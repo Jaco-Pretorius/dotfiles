@@ -1,6 +1,6 @@
 # dotfiles
 
-# Install [HomeBrew](https://brew.sh/), then run the Brewfile
+# Install [HomeBrew](https://brew.sh/)
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew bundle install
@@ -22,7 +22,7 @@ cd ~/.vim/bundle/ctrlp-cmatcher
 ./install.sh
 ```
 
-# Install oh-my-zsh
+# Install [oh-my-zsh](https://ohmyz.sh/)
 ```
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 cp zshrc ~/.zshrc
