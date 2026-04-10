@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 echo "Checking Xcode Command Line Tools..."
 if xcode-select -p &>/dev/null; then
   echo "Xcode Command Line Tools are already installed."
