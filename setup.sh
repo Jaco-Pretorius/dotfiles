@@ -26,6 +26,21 @@ else
   # Ensures brew is available in the current shell session immediately
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-
 brew update
+
+echo "Installing Homebrew dependencies..."
+brew bundle install
+
+echo "Checking oh-my-zsh..."
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  echo "oh-my-zsh is already installed."
+else
+  echo "Installing oh-my-zsh..."
+
+  # RUN_ZSH=no: Prevents the installer from spawning a new zsh shell immediately
+  # --unattended: Prevents the installer from prompting for user input
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  cp zshrc ~/.zshrc
+fi
+
 echo "Setup complete!"
