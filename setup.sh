@@ -3,44 +3,54 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "Checking Xcode Command Line Tools..."
+echo -n "Xcode Command Line Tools"
 if xcode-select -p &>/dev/null; then
-  echo "Xcode Command Line Tools are already installed."
+  echo -n " - already installed ✅"
+  echo ""
 else
-  echo "Installing Xcode Command Line Tools..."
+  echo -n " - installing"
   xcode-select --install
 
   until xcode-select -p &>/dev/null; do
-    echo "Waiting for Xcode Command Line Tools to be installed"
+    echo -n "."
     sleep 5
   done
+  echo -n " ✅"
+  echo ""
 fi
 
-echo "Checking Homebrew..."
+echo -n "Homebrew"
 if command -v brew &>/dev/null; then
-  echo "Homebrew is already installed."
+  echo -n " - already installed ✅"
+  echo ""
 else
-  echo "Installing Homebrew..."
+  echo -n " - installing"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   # Ensures brew is available in the current shell session immediately
   eval "$(/opt/homebrew/bin/brew shellenv)"
+  echo -n " ✅"
+  echo ""
 fi
+echo "Updating Homebrew"
 brew update
 
-echo "Installing Homebrew dependencies..."
+echo "Installing Homebrew dependencies"
 brew bundle install
 
-echo "Checking oh-my-zsh..."
+echo -n "Oh-My-Zsh"
 if [ -d "$HOME/.oh-my-zsh" ]; then
-  echo "oh-my-zsh is already installed."
+  echo -n " - already installed ✅"
+  echo ""
 else
-  echo "Installing oh-my-zsh..."
+  echo -n " - installing"
 
   # RUN_ZSH=no: Prevents the installer from spawning a new zsh shell immediately
   # --unattended: Prevents the installer from prompting for user input
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
   cp zshrc ~/.zshrc
+  echo -n " ✅"
+  echo ""
 fi
 
-echo "Setup complete!"
+echo "Setup complete ✅"
