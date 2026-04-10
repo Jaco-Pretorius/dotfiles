@@ -6,6 +6,12 @@
 brew bundle install
 ```
 
+# Copy user configs
+```
+cp gitconfig ~/.gitconfig
+cp inputrc ~/.inputrc
+```
+
 # Configure MacVim
 ```
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
