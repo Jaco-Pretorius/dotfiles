@@ -1,29 +1,21 @@
 # dotfiles
 
-# Install [HomeBrew](https://brew.sh/)
+## Runbook for a clean laptop
+1. Configure [github SSH keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+1. Run ./setup.sh
+
+## Configure iterm2
 ```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew bundle install
+mkdir ~/Documents/iterm2-settings
+cp iterm2/com.googlecode.iterm2.plist ~/Documents/iterm2-settings/
+
+# In term:
+# Preferences -> General -> Settings -> ✅ Load settings from a custom folder or URL
+# Preferences -> General -> Settings -> Browse to ~/Documents/iterm2-settings
 ```
 
 # Copy user configs
 ```
 cp gitconfig ~/.gitconfig
 cp inputrc ~/.inputrc
-```
-
-# Configure MacVim
-```
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-cp vimrc ~/.vimrc
-mvim -v +PluginInstall +qall
-
-cd ~/.vim/bundle/ctrlp-cmatcher
-./install.sh
-```
-
-# Install [oh-my-zsh](https://ohmyz.sh/)
-```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-cp zshrc ~/.zshrc
 ```
