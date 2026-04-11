@@ -53,4 +53,17 @@ else
   echo ""
 fi
 
+echo -n "VundleVim"
+if [ -d "$HOME/.vim/bundle/Vundle.vim" ]; then
+  echo -n " - already installed ✅"
+  echo ""
+else
+  echo -n " - installing"
+  echo ""
+  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  cp vimrc ~/.vimrc
+fi
+echo "Installing VundleVim plugins ✅"
+vim +PluginInstall +qall
+
 echo "Setup complete ✅"
