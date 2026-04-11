@@ -5,3 +5,5 @@ brew 'rbenv'
 
 cask 'iterm2'
 cask 'font-hack'
+cask 'slack'
+cask 'chatgpt'
