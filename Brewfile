@@ -1,7 +1,10 @@
+tap 'hashicorp/tap'
+
 brew 'macvim'
 brew 'the_silver_searcher'
 brew 'ripgrep'
 brew 'rbenv'
+brew 'hashicorp/tap/terraform'
 
 cask 'iterm2'
 cask 'font-hack'
