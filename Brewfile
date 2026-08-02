@@ -6,6 +6,7 @@ brew 'ripgrep'
 brew 'rbenv'
 brew 'hashicorp/tap/terraform'
 brew 'awscli'
+brew 'gh'
 
 cask 'iterm2'
 cask 'font-hack'
