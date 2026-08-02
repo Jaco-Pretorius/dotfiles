@@ -1,4 +1,4 @@
-tap 'hashicorp/tap'
+tap 'hashicorp/tap', trusted: { formula: 'hashicorp/tap/terraform' }
 
 brew 'macvim'
 brew 'the_silver_searcher'
