@@ -136,6 +136,7 @@ alias fspec="FEATURES=1 RAILS_ENV=test rspec"
 alias gst="git status"
 alias gbr="git branch"
 alias rebase="git fetch && git reset --hard origin/main"
+alias merged='branch=$(git branch --show-current) && git switch main && git branch -d "$branch" && git fetch origin && git reset --hard origin/main'
 alias be="bundle exec"
 alias wip="git add . && git commit -m 'wip'"
 alias mvim='/Applications/MacVim.app/Contents/MacOS/Vim -g'
